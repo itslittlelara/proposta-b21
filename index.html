@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposta B21 — Identidade Visual & Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #06080F;
+    --abyss: #0A0F1E;
+    --night: #111A30;
+    --line: rgba(143,182,245,0.16);
+    --line-soft: rgba(143,182,245,0.08);
+    --lapis: #2B4CA0;
+    --lazuli: #6FA0F0;
+    --azure: #9DC0F8;
+    --gold: #C9A86A;
+    --mist: #AAB7CF;
+    --paper: #EEF3FA;
+    --ease: cubic-bezier(.2,.7,.2,1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--void);
+    color: var(--paper);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient + grain */
+  .ambient {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(55% 45% at 80% 8%, rgba(43,76,160,0.26), transparent 70%),
+      radial-gradient(48% 42% at 8% 92%, rgba(43,76,160,0.15), transparent 70%);
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+    opacity: 0.05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* narrative thread / scroll progress */
+  .thread { position: fixed; left: 0; top: 0; bottom: 0; width: 2px; z-index: 90; background: var(--line-soft); }
+  .thread-fill {
+    position: fixed; left: 0; top: 0; width: 2px; z-index: 91; height: 0;
+    background: linear-gradient(180deg, var(--azure), var(--lapis));
+    box-shadow: 0 0 14px rgba(111,160,240,0.55);
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 48px;
+    background: rgba(6,8,15,0.7);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-logo { font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--mist); font-weight: 400; }
+  .nav-logo b { color: var(--paper); font-weight: 600; }
+  .nav-dots { display: flex; gap: 11px; align-items: center; }
+  .nav-dot {
+    width: 6px; height: 6px; transform: rotate(45deg);
+    background: rgba(170,183,207,0.26); cursor: pointer;
+    transition: all 0.35s var(--ease); border: none; padding: 0;
+  }
+  .nav-dot.active { background: var(--gold); box-shadow: 0 0 10px rgba(201,168,106,0.65); }
+
+  /* SLIDES */
+  .slide {
+    position: relative; z-index: 1; min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 124px 8vw 96px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .inner { max-width: 940px; width: 100%; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* orchestrated reveal */
+  .inner > * { opacity: 0; transform: translateY(20px); transition: opacity 0.85s var(--ease), transform 0.85s var(--ease); }
+  .slide.visible .inner > * { opacity: 1; transform: none; }
+  .slide.visible .inner > *:nth-child(1) { transition-delay: 0.05s; }
+  .slide.visible .inner > *:nth-child(2) { transition-delay: 0.14s; }
+  .slide.visible .inner > *:nth-child(3) { transition-delay: 0.23s; }
+  .slide.visible .inner > *:nth-child(4) { transition-delay: 0.32s; }
+  .slide.visible .inner > *:nth-child(5) { transition-delay: 0.41s; }
+
+  /* eyebrow */
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--lazuli); margin-bottom: 36px; font-weight: 500;
+  }
+  .eyebrow::before { content: ""; width: 5px; height: 5px; transform: rotate(45deg); background: var(--gold); flex-shrink: 0; }
+
+  .display { font-weight: 300; line-height: 1.12; letter-spacing: -0.022em; color: var(--paper); }
+  .display em { font-style: italic; color: var(--lazuli); font-weight: 300; }
+  .lead { color: var(--mist); font-weight: 400; line-height: 1.78; font-size: 17px; max-width: 640px; }
+  .lead b { color: var(--paper); font-weight: 500; }
+  em.lz { color: var(--azure); font-style: italic; font-weight: 400; }
+
+  /* COVER */
+  .cover { overflow: hidden; }
+  .aurora {
+    position: absolute; inset: -25%; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(38% 38% at 72% 30%, rgba(43,76,160,0.55), transparent 70%),
+      radial-gradient(32% 32% at 28% 72%, rgba(111,160,240,0.20), transparent 70%);
+    filter: blur(26px);
+    animation: aurora 16s ease-in-out infinite;
+  }
+  @keyframes aurora {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(34px,-22px) scale(1.08); }
+  }
+  .cover .eyebrow { margin-bottom: 42px; }
+  .cover-title { font-size: clamp(48px, 9vw, 112px); font-weight: 200; line-height: 1.0; letter-spacing: -0.03em; }
+  .cover-title .amp { font-style: italic; color: var(--lazuli); font-weight: 300; }
+  .cover-sub { margin-top: 32px; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mist); }
+  .cover-tag {
+    margin-top: 50px; padding-top: 32px; border-top: 1px solid var(--line);
+    font-size: clamp(20px, 2.7vw, 28px); font-weight: 300; color: var(--paper);
+    max-width: 580px; line-height: 1.45;
+  }
+  .cover-meta { margin-top: 42px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mist); }
+
+  /* section title */
+  .sec-title { font-size: clamp(31px, 5.2vw, 54px); margin-bottom: 32px; max-width: 840px; }
+
+  /* deliverable list */
+  .list { list-style: none; margin-top: 14px; }
+  .list li {
+    display: flex; gap: 18px; align-items: baseline;
+    padding: 17px 0 17px 0; border-bottom: 1px solid var(--line-soft);
+    font-size: 16px; color: var(--paper); font-weight: 400;
+    transition: padding 0.35s var(--ease), border-color 0.35s var(--ease);
+  }
+  .list li:hover { padding-left: 12px; border-color: var(--line); }
+  .list li span.k { color: var(--lazuli); font-size: 13px; min-width: 30px; font-weight: 500; letter-spacing: 0.06em; }
+  .list li .d { color: var(--mist); font-weight: 300; }
+  .note { margin-top: 32px; font-size: 14px; color: var(--mist); font-weight: 400; line-height: 1.7; max-width: 640px; }
+  .note b { color: var(--azure); font-weight: 500; }
+
+  /* process steps */
+  .steps { margin-top: 18px; display: grid; gap: 0; }
+  .step {
+    display: grid; grid-template-columns: 140px 1fr; gap: 24px;
+    padding: 24px 0; border-bottom: 1px solid var(--line-soft); align-items: baseline;
+    transition: padding 0.35s var(--ease), border-color 0.35s var(--ease);
+  }
+  .step:hover { padding-left: 12px; border-color: var(--line); }
+  .step .wk { color: var(--lazuli); font-size: 14px; font-weight: 500; letter-spacing: 0.04em; }
+  .step .what { font-size: 17px; font-weight: 300; color: var(--paper); }
+
+  /* INVESTMENT */
+  .invest-grid { display: grid; grid-template-columns: 1fr 1fr; margin-top: 14px; border: 1px solid var(--line); }
+  .invest-left { padding: 48px; border-right: 1px solid var(--line); position: relative; overflow: hidden; }
+  .invest-left::after {
+    content: ""; position: absolute; top: 40px; left: 36px; width: 240px; height: 160px;
+    background: radial-gradient(circle, rgba(111,160,240,0.22), transparent 70%);
+    filter: blur(20px); pointer-events: none;
+  }
+  .invest-right { padding: 48px; background: linear-gradient(160deg, var(--night), var(--abyss)); }
+  .price-label { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mist); margin-bottom: 16px; position: relative; }
+  .price {
+    font-size: clamp(56px, 8.5vw, 80px); font-weight: 200; line-height: 1;
+    color: var(--paper); margin-bottom: 12px; letter-spacing: -0.025em; position: relative;
+    text-shadow: 0 0 44px rgba(111,160,240,0.28);
+  }
+  .price small { font-size: 0.4em; color: var(--lazuli); vertical-align: super; font-weight: 400; }
+  .price-note { font-size: 13px; color: var(--mist); font-weight: 400; line-height: 1.6; position: relative; }
+  .breakdown { list-style: none; }
+  .breakdown li {
+    display: flex; justify-content: space-between; padding: 14px 0;
+    border-bottom: 1px solid var(--line-soft); font-size: 14px; font-weight: 400; color: var(--mist);
+  }
+  .breakdown li.tot { color: var(--paper); border-bottom: none; padding-top: 20px; }
+  .breakdown li.tot b { font-weight: 600; }
+  .breakdown li .strike { text-decoration: line-through; color: var(--mist); opacity: 0.6; }
+  .pay { margin-top: 28px; display: grid; gap: 13px; position: relative; }
+  .pay-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; font-weight: 400; }
+  .pay-row .lbl { color: var(--mist); letter-spacing: 0.05em; }
+  .pay-row .val { color: var(--paper); font-weight: 500; font-size: 14px; }
+  .validity { margin-top: 26px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); position: relative; }
+
+  /* aside (porto sol) */
+  .aside-card { margin-top: 14px; padding: 48px; border: 1px solid var(--line); background: rgba(17,26,48,0.4); }
+  .aside-title { font-size: clamp(27px, 4vw, 40px); font-weight: 300; margin-bottom: 18px; letter-spacing: -0.02em; }
+  .aside-price {
+    margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line);
+    font-size: clamp(26px, 3.4vw, 36px); font-weight: 200; color: var(--paper); letter-spacing: -0.015em;
+  }
+  .aside-price .pre { font-size: 13px; font-weight: 400; color: var(--mist); letter-spacing: 0.06em; display: block; margin-bottom: 8px; }
+  .aside-note { margin-top: 18px; font-size: 13px; color: var(--mist); font-weight: 400; line-height: 1.6; }
+
+  /* CTA */
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 12px; margin-top: 40px;
+    padding: 19px 44px; background: var(--lazuli); color: var(--void);
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none;
+    font-weight: 600; border: none; cursor: pointer;
+    box-shadow: 0 10px 36px rgba(111,160,240,0.20);
+    transition: all 0.3s var(--ease);
+  }
+  .cta-btn:hover { background: var(--azure); transform: translateY(-2px); box-shadow: 0 16px 48px rgba(111,160,240,0.34); }
+  .contact { margin-top: 28px; font-size: 13px; letter-spacing: 0.06em; color: var(--mist); font-weight: 400; }
+  .signoff { margin-top: 32px; padding-top: 26px; border-top: 1px solid var(--line-soft); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mist); }
+  .signoff b { color: var(--paper); font-weight: 600; }
+
+  /* mobile */
+  @media (max-width: 720px) {
+    .nav { padding: 18px 24px; }
+    .slide { padding: 112px 28px 76px; }
+    .invest-grid { grid-template-columns: 1fr; }
+    .invest-left { border-right: none; border-bottom: 1px solid var(--line); }
+    .step { grid-template-columns: 1fr; gap: 6px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .inner > * { opacity: 1; transform: none; transition: none; }
+    .aurora { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="thread"></div>
+<div class="thread-fill" id="threadFill"></div>
+<div class="grain"></div>
+
+<nav class="nav">
+  <div class="nav-logo">NOWHERE <b>OFFICE</b></div>
+  <div class="nav-dots" id="dots"></div>
+</nav>
+
+<!-- 1. COVER -->
+<section class="slide cover" id="s1">
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="inner">
+    <div class="eyebrow">Nowhere Office · Proposta</div>
+    <h1 class="cover-title">Identidade Visual <span class="amp">&amp;</span> Site</h1>
+    <div class="cover-sub">Preparado para Leo · B21</div>
+    <div class="cover-tag">Um site que funciona como um pitch.<br>Não um deck.</div>
+    <div class="cover-meta">Validade 7 dias · 2026</div>
+  </div>
+</section>
+
+<!-- 2. DIAGNÓSTICO -->
+<section class="slide" id="s2">
+  <div class="inner">
+    <div class="eyebrow">O momento</div>
+    <h2 class="display sec-title">Seu trabalho é excelente.<br>Mas ele não tem onde morar.</h2>
+    <p class="lead">Hoje são <b>4 clientes</b>, todos por indicação — e nenhuma proposta comercial formal até agora. A produtora <b>B21 Filmes</b> e a gestão ainda dividem o mesmo nome, e <b>nenhum ativo digital</b> traduz o seu trabalho de direção de narrativa pra quem ainda não te conhece. A meta é <b>20 clientes</b>. O boca a boca não chega lá sozinho.</p>
+  </div>
+</section>
+
+<!-- 3. A VISÃO -->
+<section class="slide" id="s3">
+  <div class="inner">
+    <div class="eyebrow">A visão</div>
+    <h2 class="display sec-title">Um site no formato de um <em>pitch</em>.</h2>
+    <p class="lead">Não um deck genérico — uma experiência que abre forte, conduz pela metodologia, apresenta os três níveis de pacote, prova com resultados e fecha com quem você é. Estética minimalista e <em class="lz">dark</em>, em preto e lápis-lazúli. Referência: <b>Fasano</b> — luxo discreto, silêncio visual. A peça que transforma indicação em escolha — e deixa claro que aqui é <b>mais do que uma produtora</b>: é direção de narrativa, growth e estratégia pra fazer o negócio do cliente crescer.</p>
+  </div>
+</section>
+
+<!-- 4. MÓDULO I -->
+<section class="slide" id="s4">
+  <div class="inner">
+    <div class="eyebrow">Módulo I · Identidade Visual</div>
+    <h2 class="display sec-title">A marca de gestão nasce aqui.</h2>
+    <ul class="list">
+      <li><span class="k">i</span><span>Conceito e direção de marca</span></li>
+      <li><span class="k">ii</span><span>Logo</span></li>
+      <li><span class="k">iii</span><span>Paleta <span class="d">— preto · azul escuro · lazuli</span></span></li>
+      <li><span class="k">iv</span><span>Tipografia</span></li>
+      <li><span class="k">v</span><span>Mini guia de aplicação</span></li>
+    </ul>
+    <p class="note">Inclui <b>apoio à definição de nome e posicionamento</b> — Direção de Narrativa B2B ou Growth Strategy — alinhados junto com você.</p>
+  </div>
+</section>
+
+<!-- 5. MÓDULO II -->
+<section class="slide" id="s5">
+  <div class="inner">
+    <div class="eyebrow">Módulo II · O Site</div>
+    <h2 class="display sec-title">One-page autoral. Cinco atos.</h2>
+    <ul class="list">
+      <li><span class="k">01</span><span>Intro / Hero <span class="d">— com vídeo</span></span></li>
+      <li><span class="k">02</span><span>Metodologia</span></li>
+      <li><span class="k">03</span><span>Pacotes <span class="d">— os 3 níveis</span></span></li>
+      <li><span class="k">04</span><span>Casos de Sucesso</span></li>
+      <li><span class="k">05</span><span>Quem sou eu</span></li>
+    </ul>
+    <p class="note">Design autoral, totalmente responsivo, animações de scroll e <b>integração do vídeo que você entrega</b> na home.</p>
+  </div>
+</section>
+
+<!-- 6. PROCESSO -->
+<section class="slide" id="s6">
+  <div class="inner">
+    <div class="eyebrow">Processo</div>
+    <h2 class="display sec-title">Quatro etapas.<br>Entrega em até 3 semanas.</h2>
+    <div class="steps">
+      <div class="step"><div class="wk">Etapa 1</div><div class="what">Briefing + Identidade Visual</div></div>
+      <div class="step"><div class="wk">Etapa 2</div><div class="what">Estrutura narrativa + copy</div></div>
+      <div class="step"><div class="wk">Etapa 3</div><div class="what">Design + build do site</div></div>
+      <div class="step"><div class="wk">Etapa 4</div><div class="what">Vídeo, ajustes, domínio e publicação</div></div>
+    </div>
+    <p class="note">Você valida cada fase antes da gente seguir. <b>Nada avança sem o seu aval.</b></p>
+  </div>
+</section>
+
+<!-- 7. INVESTIMENTO -->
+<section class="slide" id="s7">
+  <div class="inner">
+    <div class="eyebrow">Investimento</div>
+    <div class="invest-grid">
+      <div class="invest-left">
+        <div class="price-label">No pacote</div>
+        <div class="price"><small>R$</small> 5.000</div>
+        <p class="price-note">Identidade visual, site e setup técnico, fechados num único valor.</p>
+        <div class="pay">
+          <div class="pay-row"><span class="lbl">Entrada + entrega</span><span class="val">50% / 50%</span></div>
+          <div class="pay-row"><span class="lbl">Parcelado</span><span class="val">3× R$ 1.667</span></div>
+          <div class="pay-row"><span class="lbl">À vista (5% off)</span><span class="val">R$ 4.750</span></div>
+        </div>
+        <div class="validity">Proposta válida por 7 dias</div>
+      </div>
+      <div class="invest-right">
+        <div class="price-label">O que está incluído</div>
+        <ul class="breakdown">
+          <li><span>Identidade visual</span><span>R$ 2.000</span></li>
+          <li><span>Site one-page autoral</span><span>R$ 3.500</span></li>
+          <li><span>Setup — domínio + hospedagem + publicação</span><span>R$ 700</span></li>
+          <li><span>Valor avulso</span><span class="strike">R$ 6.200</span></li>
+          <li class="tot"><b>No pacote</b><b>R$ 5.000</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. PORTO SOL -->
+<section class="slide" id="s8">
+  <div class="inner">
+    <div class="eyebrow">Escopo à parte</div>
+    <div class="aside-card">
+      <h2 class="display aside-title">Porto Sol · Fazenda</h2>
+      <p class="lead">Reestruturação completa do site da propriedade — projeto mais complexo, com web designer especialista dedicado. Escopo e orçamento próprios, fechados após um briefing à parte.</p>
+      <div class="aside-price"><span class="pre">Investimento</span>Sob briefing</div>
+      <p class="aside-note">Escopo e valor fechados em conversa dedicada. Não incluído no pacote acima.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. FECHAMENTO -->
+<section class="slide close" id="s9">
+  <div class="inner">
+    <div class="eyebrow">Próximo passo</div>
+    <h2 class="display sec-title">Vamos dar um lar<br>pro seu trabalho?</h2>
+    <a class="cta-btn" href="https://wa.me/5531994357644?text=Oi%20Lara!%20Topei%20a%20proposta%20do%20site%20da%20B21." target="_blank" rel="noopener">Falar no WhatsApp →</a>
+    <div class="contact">(31) 99435-7644 &nbsp;·&nbsp; itslittlelara@gmail.com &nbsp;·&nbsp; @itslittlelara</div>
+    <div class="signoff">Nowhere Office &nbsp;·&nbsp; <b>Lara Little</b></div>
+  </div>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  const threadFill = document.getElementById('threadFill');
+
+  slides.forEach((s, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot';
+    dot.setAttribute('aria-label', 'Ir para seção ' + (i + 1));
+    dot.addEventListener('click', () => s.scrollIntoView({ behavior: 'smooth' }));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = dotsWrap.querySelectorAll('.nav-dot');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        const idx = [...slides].indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.4 });
+  slides.forEach(s => io.observe(s));
+
+  // scroll progress thread
+  const onScroll = () => {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (h.scrollTop / max) : 0;
+    threadFill.style.height = (pct * window.innerHeight) + 'px';
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+</script>
+</body>
+</html>
